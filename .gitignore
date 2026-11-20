@@ -1,0 +1,22 @@
+# Binarios e planilhas locais (nunca subir via commit; os bancos prontos vao nas GitHub Releases)
+*.db
+*.db-wal
+*.db-shm
+*.db.gz
+*.sqlite
+*.xlsx
+*.xls
+*.ods
+*.zip
+*.7z
+
+# Pastas locais de trabalho e empacotamento
+entrada/
+dist_releases/
+temp/
+_staging/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini

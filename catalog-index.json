@@ -1,0 +1,47 @@
+{
+    "schemaVersion":  "1.0",
+    "repository":  "alecrimheitor-del/KAIROS-BASES",
+    "updatedAt":  "2026-11-20T12:48:12-03:00",
+    "retentionPolicy":  {
+                            "currentMonthPlusPreviousMonths":  6,
+                            "maxActiveMonths":  7,
+                            "activeWindow":  [
+                                                 "2026-05",
+                                                 "2026-06",
+                                                 "2026-07",
+                                                 "2026-08",
+                                                 "2026-09",
+                                                 "2026-10",
+                                                 "2026-11"
+                                             ],
+                            "fallbackRule":  "Competencias anteriores a janela de 6 meses devem ser importadas localmente no Kairos via Pasta Monitorada ou Importar Arquivo."
+                        },
+    "namingConvention":  {
+                             "releaseTag":  "{source}-{yyyy}-{mm}",
+                             "assetFilename":  "{SOURCE}_{UF}_{yyyy}-{mm}_{REGIME}.db.gz",
+                             "regimes":  {
+                                             "SD":  "nao-desonerado",
+                                             "CD":  "desonerado"
+                                         }
+                         },
+    "releases":  [
+                     {
+                         "tag":  "sinapi-2026-10",
+                         "source":  "sinapi",
+                         "period":  "2026-10",
+                         "publishedAt":  "2026-11-20T12:48:12-03:00",
+                         "assets":  [
+                                        {
+                                            "uf":  "SP",
+                                            "regimeCode":  "SD",
+                                            "taxRegime":  "nao-desonerado",
+                                            "fileName":  "SINAPI_SP_2026-10_SD.db.gz",
+                                            "downloadUrl":  "https://github.com/alecrimheitor-del/KAIROS-BASES/releases/download/sinapi-2026-10/SINAPI_SP_2026-10_SD.db.gz",
+                                            "compressedBytes":  2620777,
+                                            "uncompressedBytes":  15351808,
+                                            "sha256":  "4951c36e18aca5da103e46a712da12bcd5522fe756519cfad98d990724aceaf0"
+                                        }
+                                    ]
+                     }
+                 ]
+}

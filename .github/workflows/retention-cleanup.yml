@@ -1,0 +1,72 @@
+name: Limpeza Janela 6 Meses
+
+on:
+  schedule:
+    # Executa todo dia 05 de cada mes as 06:00 UTC
+    - cron: '0 6 5 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prune-old-releases:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Remover releases com mais de 6 meses e atualizar catalog-index.json
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - << 'EOF'
+          import json, os, subprocess
+          from datetime import datetime, timezone
+
+          now = datetime.now(timezone.utc)
+          # Janela movel: mes vigente + 6 meses anteriores (7 meses ao todo)
+          active_window = []
+          y, m = now.year, now.month
+          for _ in range(7):
+              active_window.append(f"{y:04d}-{m:02d}")
+              m -= 1
+              if m == 0:
+                  m = 12
+                  y -= 1
+          active_window.reverse()
+
+          with open("catalog-index.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          kept = []
+          removed_tags = []
+          for rel in data.get("releases", []):
+              if rel.get("period") in active_window:
+                  kept.append(rel)
+              else:
+                  removed_tags.append(rel.get("tag"))
+
+          data["retentionPolicy"]["activeWindow"] = active_window
+          data["releases"] = kept
+          data["updatedAt"] = now.isoformat()
+
+          with open("catalog-index.json", "w", encoding="utf-8") as f:
+              json.dump(data, f, indent=2, ensure_ascii=False)
+              f.write("\n")
+
+          for tag in removed_tags:
+              if tag:
+                  print(f"Removendo release expirada: {tag}")
+                  subprocess.run(["gh", "release", "delete", tag, "--yes", "--cleanup-tag"], check=False)
+          EOF
+
+      - name: Commit catalog-index.json se houver alteracao
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet catalog-index.json; then
+            git add catalog-index.json
+            git commit -m "chore(retention): aplica janela de 6 meses no catalog-index.json"
+            git push
+          fi
